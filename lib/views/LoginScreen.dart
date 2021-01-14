@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:farm_app/models/User.dart';
 import 'package:farm_app/services/login_response.dart';
+import 'package:farm_app/views/DashBoard.dart';
 import 'package:farm_app/views/RegistrationScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -266,10 +270,15 @@ class _LoginScreenState extends State<LoginScreen> implements LoginCallBack {
   }
 
   @override
-  void onLoginSuccess(User user) {
+  void onLoginSuccess(User user) async{
     if (user != null) {
-      //Navigator.of(context).pushNamed("/home");
-      _showSnackBar("Login Success");
+      String currentUser = json.encode(user);
+      SharedPreferences prefes = await SharedPreferences.getInstance();
+          prefes.setString("currentUser", currentUser);
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => DashboardScreen()),
+      );
     } else {
       // TODO: implement onLoginSuccess
       _showSnackBar("Invalid credentials");

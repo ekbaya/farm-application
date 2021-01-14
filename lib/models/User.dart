@@ -12,4 +12,20 @@ class User {
         username: json["username"],
         password: json["password"],
       );
+
+  factory User.fromJson(Map<String, dynamic> json)=>userFromJson(json);
+
+  Map<String, dynamic> toJson() => userToJson(this);
 }
+
+User userFromJson(Map<String, dynamic> json){
+  return User(
+    username: json['username'] as String,
+    password: json['password'] as String
+  );
+}
+
+Map<String, dynamic> userToJson(User instance) => <String, dynamic>{
+  'username': instance.username,
+  'password': instance.password,
+};
