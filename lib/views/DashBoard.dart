@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:farm_app/models/Farmer.dart';
 import 'package:farm_app/models/User.dart';
+import 'package:farm_app/services/fetch_farmer_response.dart';
 import 'package:farm_app/views/OnBoardFarmerScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,14 +12,30 @@ class DashboardScreen extends StatefulWidget {
   _DashboardScreenState createState() => _DashboardScreenState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen> {
+class _DashboardScreenState extends State<DashboardScreen>
+    implements FetchFarmerCallBack {
   //current user
   User user;
+  List<Farmer> _farmers = [];
+
+  final scaffoldKey = new GlobalKey<ScaffoldState>();
+  FetchFarmerResponse _response;
+
+  _DashboardScreenState() {
+    _response = new FetchFarmerResponse(this);
+  }
 
   @override
   void initState() {
     super.initState();
     getCurrentUser();
+    fetchFarmers();
+  }
+
+  void fetchFarmers() {
+    setState(() {
+      _response.doFetching();
+    });
   }
 
   void getCurrentUser() async {
@@ -107,11 +125,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             )),
                           ),
                           onTap: () {
-                             Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => OnBoardFarmerScreen()),
-                              );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => OnBoardFarmerScreen()),
+                            );
                           },
                         ),
                       ],
@@ -124,6 +142,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       color: Colors.green,
                     ),
                   ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ListTile(
+                        leading:  CircleAvatar(
+                        radius: 20.0,
+                        backgroundImage:
+                            AssetImage("assets/images/profile.jpg"),
+                      ),
+                        title: Text("Name"),
+                        subtitle: Text("Phone"),
+                      ),
+
+                      Text("View")
+                    ],
+                  )
                 ],
               ),
             ),
@@ -131,5 +165,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void onDataFetched(List<Farmer> farmers) {
+    // TODO: implement onDataFetched
+  }
+
+  @override
+  void onFetchError(String error) {
+    // TODO: implement onFetchError
   }
 }
