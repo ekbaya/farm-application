@@ -1,29 +1,30 @@
 import 'package:farm_app/models/User.dart';
-import 'package:farm_app/services/login_response.dart';
-import 'package:farm_app/views/RegistrationScreen.dart';
+import 'package:farm_app/services/registration_response.dart';
+import 'package:farm_app/views/LoginScreen.dart';
 import 'package:flutter/material.dart';
 
-class LoginScreen extends StatefulWidget {
+class RegistrationScreen extends StatefulWidget {
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _RegistrationScreenState createState() => _RegistrationScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> implements LoginCallBack {
+class _RegistrationScreenState extends State<RegistrationScreen>
+    implements RegistrationCallback {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
   bool _obscureText = true;
   bool _isLoading = false;
   final scaffoldKey = new GlobalKey<ScaffoldState>();
-  LoginResponse _response;
+  RegistratinResponse _response;
 
-  _LoginScreenState() {
-    _response = new LoginResponse(this);
+  _RegistrationScreenState() {
+    _response = new RegistratinResponse(this);
   }
 
-  void _submit(String username, String password) {
+  void _submit(User user) {
     setState(() {
       _isLoading = true;
-      _response.doLogin(username, password);
+      _response.doRegistration(user);
     });
   }
 
@@ -42,7 +43,6 @@ class _LoginScreenState extends State<LoginScreen> implements LoginCallBack {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: scaffoldKey,
       body: SingleChildScrollView(
         child: Container(
           width: MediaQuery.of(context).size.width,
@@ -57,7 +57,7 @@ class _LoginScreenState extends State<LoginScreen> implements LoginCallBack {
               Padding(
                 padding: const EdgeInsets.only(top: 70),
                 child: Text(
-                  "Login",
+                  "Registration",
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 30,
@@ -174,10 +174,6 @@ class _LoginScreenState extends State<LoginScreen> implements LoginCallBack {
                         ),
                       ),
                     ),
-                    Text(
-                      "Forgot Password?",
-                      style: TextStyle(color: Colors.blue, fontSize: 18),
-                    ),
                     SizedBox(
                       height: 30,
                     ),
@@ -190,14 +186,16 @@ class _LoginScreenState extends State<LoginScreen> implements LoginCallBack {
                             borderRadius: BorderRadius.circular(25)),
                         child: Center(
                             child: Text(
-                          _isLoading ? "Please wait..." : "Login",
+                          _isLoading ? "Please wait..." : "Register",
                           style: TextStyle(color: Colors.white, fontSize: 18),
                         )),
                       ),
                       onTap: () {
-                        //login user
-                        _submit(
-                            usernameController.text, passwordController.text);
+                        //Register user
+                        User user = User(
+                            username: usernameController.text,
+                            password: passwordController.text);
+                        _submit(user);
                       },
                     ),
                     SizedBox(
@@ -209,7 +207,7 @@ class _LoginScreenState extends State<LoginScreen> implements LoginCallBack {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Dont have an account?",
+                            "Already have an account?",
                             style: TextStyle(
                                 color: Colors.green,
                                 fontSize: 18,
@@ -220,7 +218,7 @@ class _LoginScreenState extends State<LoginScreen> implements LoginCallBack {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Sign up",
+                                  "Sign in",
                                   style: TextStyle(
                                       color: Colors.blue,
                                       fontSize: 18,
@@ -236,10 +234,11 @@ class _LoginScreenState extends State<LoginScreen> implements LoginCallBack {
                               ],
                             ),
                             onTap: () {
+                              //
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => RegistrationScreen()),
+                                    builder: (context) => LoginScreen()),
                               );
                             },
                           )
@@ -257,7 +256,7 @@ class _LoginScreenState extends State<LoginScreen> implements LoginCallBack {
   }
 
   @override
-  void onLoginError(String error) {
+  void onRegistrationError(String error) {
     // TODO: implement onLoginError
     _showSnackBar(error);
     setState(() {
@@ -266,16 +265,11 @@ class _LoginScreenState extends State<LoginScreen> implements LoginCallBack {
   }
 
   @override
-  void onLoginSuccess(User user) {
-    if (user != null) {
-      //Navigator.of(context).pushNamed("/home");
-      _showSnackBar("Login Success");
-    } else {
-      // TODO: implement onLoginSuccess
-      _showSnackBar("Invalid credentials");
-      setState(() {
-        _isLoading = false;
-      });
-    }
+  void onRegistrationSuccess(int result) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen()),
+    );
+    print("RESULTS:" + result.toString());
   }
 }
