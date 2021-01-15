@@ -35,6 +35,12 @@ class DatabaseHelper {
             "phone TEXT,"
             "country TEXT"
             ")");
+         await db.execute("CREATE TABLE breed ("
+            "id integer primary key AUTOINCREMENT,"
+            "owner TEXT,"
+            "name TEXT,"
+            "number TEXT"
+            ")");
       },
     );
     return ourDb;

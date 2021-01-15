@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:farm_app/models/Farmer.dart';
 import 'package:farm_app/models/User.dart';
 import 'package:farm_app/services/fetch_farmer_response.dart';
+import 'package:farm_app/views/FarmPage.dart';
 import 'package:farm_app/views/OnBoardFarmerScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -142,21 +143,14 @@ class _DashboardScreenState extends State<DashboardScreen>
                       color: Colors.green,
                     ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      ListTile(
-                        leading:  CircleAvatar(
-                        radius: 20.0,
-                        backgroundImage:
-                            AssetImage("assets/images/profile.jpg"),
-                      ),
-                        title: Text("Name"),
-                        subtitle: Text("Phone"),
-                      ),
-
-                      Text("View")
-                    ],
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height * 0.64,
+                    child: ListView.builder(
+                        itemCount: _farmers!= null ? _farmers.length: 0,
+                        itemBuilder: (context, index) {
+                          return buildFarmer(context, _farmers[index]);
+                        }),
                   )
                 ],
               ),
@@ -167,9 +161,68 @@ class _DashboardScreenState extends State<DashboardScreen>
     );
   }
 
+  Padding buildFarmer(BuildContext context, Farmer farmer) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      child: InkWell(
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          height: 100,
+          decoration: BoxDecoration(
+              color: Colors.white, borderRadius: BorderRadius.circular(5)),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                width: 300,
+                child: ListTile(
+                  leading: CircleAvatar(
+                    radius: 25.0,
+                    backgroundImage: AssetImage("assets/images/profile.jpg"),
+                  ),
+                  title: Text(
+                    farmer.name,
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  ),
+                  subtitle: Text(farmer.phone),
+                ),
+              ),
+              Row(
+                children: [
+                  Icon(Icons.remove_red_eye),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    "View",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  ),
+                ],
+              ),
+              SizedBox(
+                width: 10,
+              ),
+            ],
+          ),
+        ),
+        onTap: () {
+           Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => FarmPage(
+          farmer: farmer,
+        )),
+      );
+        },
+      ),
+    );
+  }
+
   @override
   void onDataFetched(List<Farmer> farmers) {
     // TODO: implement onDataFetched
+    setState(() {
+      _farmers = farmers;
+    });
   }
 
   @override

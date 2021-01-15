@@ -1,4 +1,5 @@
 import 'package:farm_app/database/Database_helper.dart';
+import 'package:farm_app/models/Breed.dart';
 import 'package:farm_app/models/Farmer.dart';
 import 'package:farm_app/models/User.dart';
 
@@ -14,6 +15,12 @@ class FarmRepository{
   Future<int> registerFarmer(Farmer farmer) async {
     var dbClient = await con.db;
     int res = await dbClient.insert("farmer", farmer.toMap());
+    return res;
+  }
+
+  Future<int> registerBreed(Breed breed) async {
+    var dbClient = await con.db;
+    int res = await dbClient.insert("breed", breed.toMap());
     return res;
   }
   
@@ -32,6 +39,15 @@ class FarmRepository{
     
     List<Farmer> list =
         res.isNotEmpty ? res.map((c) => Farmer.fromMap(c)).toList() : null;
+    return list;
+  }
+
+  Future<List<Breed>> getAllBreeds(String owner) async {
+    var dbClient = await con.db;
+    var res = await dbClient.rawQuery("SELECT * FROM breed WHERE owner = '$owner'");
+    
+    List<Breed> list =
+        res.isNotEmpty ? res.map((c) => Breed.fromMap(c)).toList() : null;
     return list;
   }
 

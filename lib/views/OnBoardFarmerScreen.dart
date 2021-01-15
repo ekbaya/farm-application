@@ -48,6 +48,7 @@ class _OnBoardFarmerScreenState extends State<OnBoardFarmerScreen> implements Fa
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       appBar: AppBar(
         title: Text("Register new Farmer"),
       ),
