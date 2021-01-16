@@ -32,6 +32,7 @@ dependencies:
   path_provider: ^1.6.11
   shared_preferences: ^0.5.12+4
   flutter_country_picker: ^0.1.6
+  table_calendar: ^2.3.3
 
 dev_dependencies:
   flutter_test:
