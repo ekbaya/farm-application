@@ -2,15 +2,6 @@ import 'package:farm_app/models/Farmer.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-
-// Example holidays
-final Map<DateTime, List> _holidays = {
-  DateTime(2020, 1, 1): ['New Year\'s Day'],
-  DateTime(2020, 1, 6): ['Epiphany'],
-  DateTime(2021, 2, 14): ['Valentine\'s Day'],
-  DateTime(2020, 4, 21): ['Easter Sunday'],
-  DateTime(2020, 4, 22): ['Easter Monday'],
-};
 // ignore: must_be_immutable
 class CalenderPage extends StatefulWidget {
   Farmer farmer;
@@ -19,9 +10,10 @@ class CalenderPage extends StatefulWidget {
   _CalenderPageState createState() => _CalenderPageState();
 }
 
-class _CalenderPageState extends State<CalenderPage> with TickerProviderStateMixin {
-  Map<DateTime, List> _events;
-  List _selectedEvents;
+class _CalenderPageState extends State<CalenderPage>
+    with TickerProviderStateMixin {
+  Map<DateTime, List> _visits;
+  List _selectedVisits;
   AnimationController _animationController;
   CalendarController _calendarController;
 
@@ -30,61 +22,70 @@ class _CalenderPageState extends State<CalenderPage> with TickerProviderStateMix
     super.initState();
     final _selectedDay = DateTime.now();
 
-    _events = {
+    _visits = {
       _selectedDay.subtract(Duration(days: 30)): [
-        'Event A0',
-        'Event B0',
-        'Event C0'
+        'Dove House',
+        'Rabit House',
+        'Turkey Farm'
       ],
-      _selectedDay.subtract(Duration(days: 27)): ['Event A1'],
+      _selectedDay.subtract(Duration(days: 27)): ['Dog House'],
       _selectedDay.subtract(Duration(days: 20)): [
-        'Event A2',
-        'Event B2',
-        'Event C2',
-        'Event D2'
+        'Dog House',
+        'Cow Huose',
+        'Rabit House',
+        'Vegetable Garden'
       ],
-      _selectedDay.subtract(Duration(days: 16)): ['Event A3', 'Event B3'],
+      _selectedDay.subtract(Duration(days: 16)): ['Turkey Farm', 'Goat House'],
       _selectedDay.subtract(Duration(days: 10)): [
-        'Event A4',
-        'Event B4',
-        'Event C4'
+        'Turkey Farm',
+        'Dog House',
+        'Cow Huose',
       ],
       _selectedDay.subtract(Duration(days: 4)): [
-        'Event A5',
-        'Event B5',
-        'Event C5'
+        'Turkey Farm',
+        'Donkey Yard',
+        'Goat House'
       ],
-      _selectedDay.subtract(Duration(days: 2)): ['Event A6', 'Event B6'],
-      _selectedDay: ['Event A7', 'Event B7', 'Event C7', 'Event D7'],
+      _selectedDay.subtract(Duration(days: 2)): ['Donkey Yard', 'Goat House'],
+      _selectedDay: [
+        'Paultry Farm',
+        'Turkey Farm',
+        'Rabit House',
+        'Sheep House'
+      ],
       _selectedDay.add(Duration(days: 1)): [
-        'Event A8',
-        'Event B8',
-        'Event C8',
-        'Event D8'
+        'Cow Huose',
+        'Rabit House',
+        'Vegetable Garden'
       ],
       _selectedDay.add(Duration(days: 3)):
-          Set.from(['Event A9', 'Event A9', 'Event B9']).toList(),
+          Set.from(['Paultry Farm',
+        'Turkey Farm',
+        'Rabit House',]).toList(),
       _selectedDay.add(Duration(days: 7)): [
-        'Event A10',
-        'Event B10',
-        'Event C10'
+        'Turkey Farm',
+        'Donkey Yard',
+        'Goat House'
       ],
-      _selectedDay.add(Duration(days: 11)): ['Event A11', 'Event B11'],
+      _selectedDay.add(Duration(days: 11)): [
+        'Turkey Farm',
+        'Donkey Yard',
+      ],
       _selectedDay.add(Duration(days: 17)): [
-        'Event A12',
-        'Event B12',
-        'Event C12',
-        'Event D12'
+        'Dove House',
+        'Rabit House',
+        'Turkey Farm'
+        'Goat House'
       ],
-      _selectedDay.add(Duration(days: 22)): ['Event A13', 'Event B13'],
+      _selectedDay.add(Duration(days: 22)): ['Rabit House', 'Turkey Farm'],
       _selectedDay.add(Duration(days: 26)): [
-        'Event A14',
-        'Event B14',
-        'Event C14'
+        'Rabit House',
+        'Turkey Farm'
+        'Goat House'
       ],
     };
 
-    _selectedEvents = _events[_selectedDay] ?? [];
+    _selectedVisits = _visits[_selectedDay] ?? [];
     _calendarController = CalendarController();
 
     _animationController = AnimationController(
@@ -102,10 +103,10 @@ class _CalenderPageState extends State<CalenderPage> with TickerProviderStateMix
     super.dispose();
   }
 
-  void _onDaySelected(DateTime day, List events, List holidays) {
+  void _onDaySelected(DateTime day, List visits, List holidays) {
     print('CALLBACK: _onDaySelected');
     setState(() {
-      _selectedEvents = events;
+      _selectedVisits = visits;
     });
   }
 
@@ -123,59 +124,26 @@ class _CalenderPageState extends State<CalenderPage> with TickerProviderStateMix
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.farmer.name+"'s Calender"),
+        title: Text(widget.farmer.name + "'s Calender"),
       ),
       body: Column(
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          // Switch out 2 lines below to play with TableCalendar's settings
-          //-----------------------
-          _buildTableCalendar(),
-          // _buildTableCalendarWithBuilders(),
+          _buildTableCalendarWithBuilders(),
           const SizedBox(height: 8.0),
           _buildButtons(),
           const SizedBox(height: 8.0),
           Expanded(child: _buildEventList()),
         ],
       ),
-      
     );
   }
 
-    // Simple TableCalendar configuration (using Styles)
-  Widget _buildTableCalendar() {
-    return TableCalendar(
-      calendarController: _calendarController,
-      events: _events,
-      holidays: _holidays,
-      startingDayOfWeek: StartingDayOfWeek.monday,
-      calendarStyle: CalendarStyle(
-        selectedColor: Colors.deepOrange[400],
-        todayColor: Colors.deepOrange[200],
-        markersColor: Colors.brown[700],
-        outsideDaysVisible: false,
-      ),
-      headerStyle: HeaderStyle(
-        formatButtonTextStyle:
-            TextStyle().copyWith(color: Colors.white, fontSize: 15.0),
-        formatButtonDecoration: BoxDecoration(
-          color: Colors.deepOrange[400],
-          borderRadius: BorderRadius.circular(16.0),
-        ),
-      ),
-      onDaySelected: _onDaySelected,
-      onVisibleDaysChanged: _onVisibleDaysChanged,
-      onCalendarCreated: _onCalendarCreated,
-    );
-  }
-
-   // More advanced TableCalendar configuration (using Builders & Styles)
   Widget _buildTableCalendarWithBuilders() {
     return TableCalendar(
-      locale: 'pl_PL',
+      locale: 'en_us',
       calendarController: _calendarController,
-      events: _events,
-      holidays: _holidays,
+      events: _visits,
       initialCalendarFormat: CalendarFormat.month,
       formatAnimation: FormatAnimation.slide,
       startingDayOfWeek: StartingDayOfWeek.sunday,
@@ -261,7 +229,7 @@ class _CalenderPageState extends State<CalenderPage> with TickerProviderStateMix
     );
   }
 
-   Widget _buildEventsMarker(DateTime date, List events) {
+  Widget _buildEventsMarker(DateTime date, List events) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       decoration: BoxDecoration(
@@ -295,8 +263,6 @@ class _CalenderPageState extends State<CalenderPage> with TickerProviderStateMix
   }
 
   Widget _buildButtons() {
-    final dateTime = _events.keys.elementAt(_events.length - 2);
-
     return Column(
       children: <Widget>[
         Row(
@@ -331,23 +297,13 @@ class _CalenderPageState extends State<CalenderPage> with TickerProviderStateMix
           ],
         ),
         const SizedBox(height: 8.0),
-        RaisedButton(
-          child: Text(
-              'Set day ${dateTime.day}-${dateTime.month}-${dateTime.year}'),
-          onPressed: () {
-            _calendarController.setSelectedDay(
-              DateTime(dateTime.year, dateTime.month, dateTime.day),
-              runCallback: true,
-            );
-          },
-        ),
       ],
     );
   }
 
   Widget _buildEventList() {
     return ListView(
-      children: _selectedEvents
+      children: _selectedVisits
           .map((event) => Container(
                 decoration: BoxDecoration(
                   border: Border.all(width: 0.8),

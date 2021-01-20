@@ -13,7 +13,8 @@ class FarmPage extends StatefulWidget {
   _FarmPageState createState() => _FarmPageState();
 }
 
-class _FarmPageState extends State<FarmPage> implements BreedRegistrationCallback, FetchBreedCallBack{
+class _FarmPageState extends State<FarmPage>
+    implements BreedRegistrationCallback, FetchBreedCallBack {
   final nameController = TextEditingController();
   final numberController = TextEditingController();
 
@@ -40,7 +41,7 @@ class _FarmPageState extends State<FarmPage> implements BreedRegistrationCallbac
     });
   }
 
-   void _showSnackBar(String text) {
+  void _showSnackBar(String text) {
     scaffoldKey.currentState.showSnackBar(new SnackBar(
       content: new Text(text),
     ));
@@ -68,9 +69,10 @@ class _FarmPageState extends State<FarmPage> implements BreedRegistrationCallbac
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => CalenderPage(
-                              farmer: widget.farmer,
-                            )),
+                      builder: (context) => CalenderPage(
+                        farmer: widget.farmer,
+                      ),
+                    ),
                   );
                   break;
               }
@@ -106,258 +108,262 @@ class _FarmPageState extends State<FarmPage> implements BreedRegistrationCallbac
                   backgroundImage: AssetImage("assets/images/profile.jpg"),
                 ),
               ),
-              Container(
-                margin: EdgeInsets.only(top: 20),
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height * 0.73,
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(50),
-                      topRight: Radius.circular(50)),
-                ),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.person,
-                                color: Colors.blue,
-                                size: 20,
-                              ),
-                              SizedBox(
-                                width: 50,
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Name",
-                                    style: TextStyle(
-                                        color: Colors.black, fontSize: 18),
-                                  ),
-                                  Text(widget.farmer.name,
+              Expanded(
+                child: Container(
+                  margin: EdgeInsets.only(top: 20),
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(50),
+                        topRight: Radius.circular(50)),
+                  ),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.person,
+                                  color: Colors.blue,
+                                  size: 20,
+                                ),
+                                SizedBox(
+                                  width: 50,
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Name",
                                       style: TextStyle(
-                                          color: Colors.black45, fontSize: 14))
-                                ],
-                              ),
-                            ],
-                          ),
-                          Icon(
-                            Icons.edit,
-                            color: Colors.blue,
-                            size: 20,
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 90, right: 30),
-                      child: SizedBox(
-                        height: 1,
-                        child: Container(
-                          color: Colors.blue,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.phone,
-                                color: Colors.blue,
-                                size: 20,
-                              ),
-                              SizedBox(
-                                width: 50,
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Phone",
-                                    style: TextStyle(
-                                        color: Colors.black, fontSize: 18),
-                                  ),
-                                  Text(widget.farmer.phone,
-                                      style: TextStyle(
-                                          color: Colors.black45, fontSize: 14))
-                                ],
-                              ),
-                            ],
-                          ),
-                          Icon(
-                            Icons.edit,
-                            color: Colors.blue,
-                            size: 20,
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 90, right: 30),
-                      child: SizedBox(
-                        height: 1,
-                        child: Container(
-                          color: Colors.blue,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.flag,
-                                color: Colors.blue,
-                                size: 20,
-                              ),
-                              SizedBox(
-                                width: 50,
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Country",
-                                    style: TextStyle(
-                                        color: Colors.black, fontSize: 18),
-                                  ),
-                                  Text(widget.farmer.country,
-                                      style: TextStyle(
-                                          color: Colors.black45, fontSize: 14))
-                                ],
-                              ),
-                            ],
-                          ),
-                          Icon(
-                            Icons.edit,
-                            color: Colors.blue,
-                            size: 20,
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 90, right: 30),
-                      child: SizedBox(
-                        height: 1,
-                        child: Container(
-                          color: Colors.blue,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "List of all Breeds",
-                            style: TextStyle(fontSize: 20),
-                          ),
-                          InkWell(
-                            child: Container(
-                              width: 120,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                  color: Colors.indigo,
-                                  borderRadius: BorderRadius.circular(5)),
-                              child: Center(
-                                  child: Text(
-                                "add Breed",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 18),
-                              )),
+                                          color: Colors.black, fontSize: 18),
+                                    ),
+                                    Text(widget.farmer.name,
+                                        style: TextStyle(
+                                            color: Colors.black45,
+                                            fontSize: 14))
+                                  ],
+                                ),
+                              ],
                             ),
-                            onTap: () {
-                              buildInputShowDialog(context);
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 1,
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        color: Colors.green,
-                      ),
-                    ),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        child: DataTable(
-                          columns: const <DataColumn>[
-                            DataColumn(
-                              label: Text(
-                                'SL#',
-                                style: TextStyle(
-                                    color: Colors.black45,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18),
-                              ),
+                            Icon(
+                              Icons.edit,
+                              color: Colors.blue,
+                              size: 20,
                             ),
-                            DataColumn(
-                              label: Text(
-                                'Name',
-                                style: TextStyle(
-                                    color: Colors.black45,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18),
-                              ),
-                            ),
-                            DataColumn(
-                              label: Text(
-                                'Number',
-                                style: TextStyle(
-                                    color: Colors.black45,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18),
-                              ),
-                            ),
-                          ],
-                          rows: <DataRow>[
-                            ...buildBreeds(_breeds!= null?_breeds:[]),
                           ],
                         ),
                       ),
-                    ),
-                  ],
+                      SizedBox(
+                        height: 8,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 90, right: 30),
+                        child: SizedBox(
+                          height: 1,
+                          child: Container(
+                            color: Colors.blue,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.phone,
+                                  color: Colors.blue,
+                                  size: 20,
+                                ),
+                                SizedBox(
+                                  width: 50,
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Phone",
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 18),
+                                    ),
+                                    Text(widget.farmer.phone,
+                                        style: TextStyle(
+                                            color: Colors.black45,
+                                            fontSize: 14))
+                                  ],
+                                ),
+                              ],
+                            ),
+                            Icon(
+                              Icons.edit,
+                              color: Colors.blue,
+                              size: 20,
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 90, right: 30),
+                        child: SizedBox(
+                          height: 1,
+                          child: Container(
+                            color: Colors.blue,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.flag,
+                                  color: Colors.blue,
+                                  size: 20,
+                                ),
+                                SizedBox(
+                                  width: 50,
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Country",
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 18),
+                                    ),
+                                    Text(widget.farmer.country,
+                                        style: TextStyle(
+                                            color: Colors.black45,
+                                            fontSize: 14))
+                                  ],
+                                ),
+                              ],
+                            ),
+                            Icon(
+                              Icons.edit,
+                              color: Colors.blue,
+                              size: 20,
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 90, right: 30),
+                        child: SizedBox(
+                          height: 1,
+                          child: Container(
+                            color: Colors.blue,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "List of all Breeds",
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            InkWell(
+                              child: Container(
+                                width: 120,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                    color: Colors.indigo,
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: Center(
+                                    child: Text(
+                                  "add Breed",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 18),
+                                )),
+                              ),
+                              onTap: () {
+                                buildInputShowDialog(context);
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 1,
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          color: Colors.green,
+                        ),
+                      ),
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          child: DataTable(
+                            columns: const <DataColumn>[
+                              DataColumn(
+                                label: Text(
+                                  'SL#',
+                                  style: TextStyle(
+                                      color: Colors.black45,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18),
+                                ),
+                              ),
+                              DataColumn(
+                                label: Text(
+                                  'Name',
+                                  style: TextStyle(
+                                      color: Colors.black45,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18),
+                                ),
+                              ),
+                              DataColumn(
+                                label: Text(
+                                  'Number',
+                                  style: TextStyle(
+                                      color: Colors.black45,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18),
+                                ),
+                              ),
+                            ],
+                            rows: <DataRow>[
+                              ...buildBreeds(_breeds != null ? _breeds : []),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -560,10 +566,9 @@ class _FarmPageState extends State<FarmPage> implements BreedRegistrationCallbac
                               Navigator.of(context).pop();
                               //create Breed
                               Breed breed = Breed(
-                                owner: widget.farmer.id.toString(),
-                                name: nameController.text,
-                                number: numberController.text
-                              );
+                                  owner: widget.farmer.id.toString(),
+                                  name: nameController.text,
+                                  number: numberController.text);
 
                               _submit(breed);
                             },
@@ -581,12 +586,12 @@ class _FarmPageState extends State<FarmPage> implements BreedRegistrationCallbac
 
   @override
   void onRegistrationError(String error) {
-      // TODO: implement onRegistrationError
-      _showSnackBar(error);
-    }
-  
-    @override
-    void onRegistrationSuccess(int result) {
+    // TODO: implement onRegistrationError
+    _showSnackBar(error);
+  }
+
+  @override
+  void onRegistrationSuccess(int result) {
     // TODO: implement onRegistrationSuccess
     print("ID*******************$result");
     setState(() {
@@ -596,14 +601,14 @@ class _FarmPageState extends State<FarmPage> implements BreedRegistrationCallbac
 
   @override
   void onDataFetched(List<Breed> breeds) {
-      // TODO: implement onDataFetched\
-      setState(() {
-        _breeds = breeds;
-      });
-    }
-  
-    @override
-    void onFetchError(String error) {
+    // TODO: implement onDataFetched\
+    setState(() {
+      _breeds = breeds;
+    });
+  }
+
+  @override
+  void onFetchError(String error) {
     // TODO: implement onFetchError
   }
 }
