@@ -74,13 +74,13 @@ class _CalenderPageState extends State<CalenderPage>
       _selectedDay.add(Duration(days: 17)): [
         'Dove House',
         'Rabit House',
-        'Turkey Farm'
+        'Turkey Farm',
         'Goat House'
       ],
       _selectedDay.add(Duration(days: 22)): ['Rabit House', 'Turkey Farm'],
       _selectedDay.add(Duration(days: 26)): [
         'Rabit House',
-        'Turkey Farm'
+        'Turkey Farm',
         'Goat House'
       ],
     };

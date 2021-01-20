@@ -18,6 +18,12 @@ class FarmRepository{
     return res;
   }
 
+  Future<int> updateFarmer(Farmer farmer, int id) async {
+    var dbClient = await con.db;
+    int res = await dbClient.update("farmer", farmer.toMap(), where: 'id = ?', whereArgs: [id]);
+    return res;
+  }
+
   Future<int> registerBreed(Breed breed) async {
     var dbClient = await con.db;
     int res = await dbClient.insert("breed", breed.toMap());
@@ -33,6 +39,17 @@ class FarmRepository{
     }
     return null;
   }
+
+  Future<Farmer> getFarmerByID(int id) async {
+    var dbClient = await con.db;
+    var res = await dbClient.rawQuery("SELECT * FROM farmer WHERE id = '$id'");
+    
+    if (res.length > 0) {
+      return new Farmer.fromMap(res.first);
+    }
+    return null;
+  }
+
   Future<List<Farmer>> getAllFarmers() async {
     var dbClient = await con.db;
     var res = await dbClient.query("farmer");
@@ -57,4 +74,7 @@ class FarmRepository{
     int res = await dbClient.delete("User");
     return res;
   }
+
+  
+
 }

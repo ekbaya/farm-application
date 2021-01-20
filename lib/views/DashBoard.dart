@@ -112,19 +112,10 @@ class _DashboardScreenState extends State<DashboardScreen>
                           style: TextStyle(fontSize: 20),
                         ),
                         InkWell(
-                          child: Container(
-                            width: 120,
-                            height: 50,
-                            decoration: BoxDecoration(
-                                color: Colors.indigo,
-                                borderRadius: BorderRadius.circular(5)),
-                            child: Center(
-                                child: Text(
-                              "add farmer",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 18),
-                            )),
-                          ),
+                          child:CircleAvatar(
+                                radius: 20.0,
+                                child: Icon(Icons.add),
+                              ),
                           onTap: () {
                             Navigator.push(
                               context,

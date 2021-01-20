@@ -2,6 +2,8 @@ import 'package:farm_app/models/Breed.dart';
 import 'package:farm_app/models/Farmer.dart';
 import 'package:farm_app/services/create_breed_response.dart';
 import 'package:farm_app/services/fetch_breed_response.dart';
+import 'package:farm_app/services/get_farmer_response.dart';
+import 'package:farm_app/services/update_farmer_response.dart';
 import 'package:farm_app/views/CalenderPage.dart';
 import 'package:flutter/material.dart';
 
@@ -14,19 +16,29 @@ class FarmPage extends StatefulWidget {
 }
 
 class _FarmPageState extends State<FarmPage>
-    implements BreedRegistrationCallback, FetchBreedCallBack {
+  implements BreedRegistrationCallback, FetchBreedCallBack , UpdationCallback,
+  FarmerCallBack{
   final nameController = TextEditingController();
   final numberController = TextEditingController();
+  final farmerNameController = TextEditingController();
+  final farmerPhoneController = TextEditingController();
+  final farmerCountryController = TextEditingController();
+
+  Farmer _farmer;
 
   final scaffoldKey = new GlobalKey<ScaffoldState>();
   BreedRegistratinResponse _response;
   FetchBreedResponse response;
+  UpdateFarmerResponse farmerResponse;
+  GetFarmerResponse getFarmerResponse;
 
   List<Breed> _breeds = [];
 
   _FarmPageState() {
+    getFarmerResponse = new GetFarmerResponse(this);
     _response = new BreedRegistratinResponse(this);
     response = new FetchBreedResponse(this);
+    farmerResponse = new UpdateFarmerResponse(this);
   }
 
   void _submit(Breed breed) {
@@ -50,8 +62,14 @@ class _FarmPageState extends State<FarmPage>
   @override
   void initState() {
     // TODO: implement initState
+    getFarmer(widget.farmer.id);
     getBreeds(widget.farmer.id.toString());
     super.initState();
+  }
+
+  void getFarmer(int id){
+    //get the farmer from db instead
+    getFarmerResponse.doFetchFarmer(id);
   }
 
   @override
@@ -60,7 +78,7 @@ class _FarmPageState extends State<FarmPage>
       key: scaffoldKey,
       appBar: AppBar(
         elevation: 0,
-        title: Text(widget.farmer.name + "'s Farm Page"),
+        title: Text(_farmer!= null ?_farmer.name + "'s Farm Page":"Farm Page"),
         actions: [
           PopupMenuButton<String>(
             onSelected: (String value) {
@@ -121,8 +139,8 @@ class _FarmPageState extends State<FarmPage>
                   child: Column(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 10),
+                        padding: const EdgeInsets.only(
+                            left: 20, right: 20, top: 30, bottom: 10),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -144,7 +162,7 @@ class _FarmPageState extends State<FarmPage>
                                       style: TextStyle(
                                           color: Colors.black, fontSize: 18),
                                     ),
-                                    Text(widget.farmer.name,
+                                    Text(_farmer!= null ?_farmer.name:"",
                                         style: TextStyle(
                                             color: Colors.black45,
                                             fontSize: 14))
@@ -152,10 +170,16 @@ class _FarmPageState extends State<FarmPage>
                                 ),
                               ],
                             ),
-                            Icon(
-                              Icons.edit,
-                              color: Colors.blue,
-                              size: 20,
+                            InkWell(
+                              child: Icon(
+                                Icons.edit,
+                                color: Colors.blue,
+                                size: 20,
+                              ),
+                              onTap: () {
+                                farmerNameController.text = _farmer.name;
+                                buildUpdateNameDialog(context);
+                              },
                             ),
                           ],
                         ),
@@ -199,7 +223,7 @@ class _FarmPageState extends State<FarmPage>
                                       style: TextStyle(
                                           color: Colors.black, fontSize: 18),
                                     ),
-                                    Text(widget.farmer.phone,
+                                    Text(_farmer!= null?_farmer.phone:"",
                                         style: TextStyle(
                                             color: Colors.black45,
                                             fontSize: 14))
@@ -207,10 +231,16 @@ class _FarmPageState extends State<FarmPage>
                                 ),
                               ],
                             ),
-                            Icon(
-                              Icons.edit,
-                              color: Colors.blue,
-                              size: 20,
+                            InkWell(
+                              child: Icon(
+                                Icons.edit,
+                                color: Colors.blue,
+                                size: 20,
+                              ),
+                              onTap: () {
+                                farmerPhoneController.text = _farmer.phone;
+                                buildUpdatePhoneDialog(context);
+                              },
                             ),
                           ],
                         ),
@@ -254,7 +284,7 @@ class _FarmPageState extends State<FarmPage>
                                       style: TextStyle(
                                           color: Colors.black, fontSize: 18),
                                     ),
-                                    Text(widget.farmer.country,
+                                    Text(_farmer!=null?_farmer.country:"",
                                         style: TextStyle(
                                             color: Colors.black45,
                                             fontSize: 14))
@@ -262,10 +292,16 @@ class _FarmPageState extends State<FarmPage>
                                 ),
                               ],
                             ),
-                            Icon(
-                              Icons.edit,
-                              color: Colors.blue,
-                              size: 20,
+                            InkWell(
+                              child: Icon(
+                                Icons.edit,
+                                color: Colors.blue,
+                                size: 20,
+                              ),
+                              onTap: (){
+                                farmerCountryController.text = _farmer.country;
+                                buildUpdateCountryDialog(context);
+                              },
                             ),
                           ],
                         ),
@@ -295,18 +331,9 @@ class _FarmPageState extends State<FarmPage>
                               style: TextStyle(fontSize: 20),
                             ),
                             InkWell(
-                              child: Container(
-                                width: 120,
-                                height: 50,
-                                decoration: BoxDecoration(
-                                    color: Colors.indigo,
-                                    borderRadius: BorderRadius.circular(5)),
-                                child: Center(
-                                    child: Text(
-                                  "add Breed",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 18),
-                                )),
+                              child: CircleAvatar(
+                                radius: 20.0,
+                                child: Icon(Icons.add),
                               ),
                               onTap: () {
                                 buildInputShowDialog(context);
@@ -584,6 +611,450 @@ class _FarmPageState extends State<FarmPage>
         });
   }
 
+  Future buildUpdateNameDialog(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5.0),
+            ), //this right here
+            child: SingleChildScrollView(
+              child: Container(
+                width: width * 0.75,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "UPDATE NAME",
+                            style: TextStyle(
+                                color: Colors.indigo,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              Icons.close,
+                              size: 30,
+                              color: Colors.blue,
+                            ),
+                            onPressed: () => {
+                              //CLOSE dialogue
+                              Navigator.of(context).pop(),
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      height: 0.5,
+                      color: Colors.grey,
+                    ),
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                        child: Text(
+                          "Name",
+                          style: TextStyle(
+                              color: Colors.black45,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16.0),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+                      child: Container(
+                        height: 45,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(width: 1.0),
+                        ),
+                        child: TextField(
+                          controller: farmerNameController,
+                          textAlign: TextAlign.justify,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                          ),
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            errorBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 5.0),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      height: 0.5,
+                      color: Colors.grey,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 20.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          InkWell(
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * 0.25,
+                              height: 40.0,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  border: Border.all(width: 1)),
+                              child: Center(
+                                child: Text(
+                                  "Close",
+                                  style: TextStyle(
+                                      color: Colors.black45,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ),
+                            onTap: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                          InkWell(
+                            child: Container(
+                                width: MediaQuery.of(context).size.width * 0.35,
+                                height: 40.0,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    color: Colors.green),
+                                child: Center(
+                                    child: Text(
+                                  "Update",
+                                  style: TextStyle(color: Colors.white),
+                                ))),
+                            onTap: () async {
+                              Navigator.of(context).pop();
+                              //create Farmer
+                              Farmer farmer = Farmer(
+                                name: farmerNameController.text,
+                                phone: _farmer.phone,
+                                country: _farmer.country,
+                              );
+                              farmerResponse.doFarmerUpdation(farmer, widget.farmer.id);
+                            },
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
+  Future buildUpdatePhoneDialog(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5.0),
+            ), //this right here
+            child: SingleChildScrollView(
+              child: Container(
+                width: width * 0.75,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "UPDATE PHONE",
+                            style: TextStyle(
+                                color: Colors.indigo,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              Icons.close,
+                              size: 30,
+                              color: Colors.blue,
+                            ),
+                            onPressed: () => {
+                              //CLOSE dialogue
+                              Navigator.of(context).pop(),
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      height: 0.5,
+                      color: Colors.grey,
+                    ),
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                        child: Text(
+                          "Phone",
+                          style: TextStyle(
+                              color: Colors.black45,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16.0),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+                      child: Container(
+                        height: 45,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(width: 1.0),
+                        ),
+                        child: TextField(
+                          controller: farmerPhoneController,
+                          textAlign: TextAlign.justify,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                          ),
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            errorBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 5.0),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      height: 0.5,
+                      color: Colors.grey,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 20.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          InkWell(
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * 0.25,
+                              height: 40.0,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  border: Border.all(width: 1)),
+                              child: Center(
+                                child: Text(
+                                  "Close",
+                                  style: TextStyle(
+                                      color: Colors.black45,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ),
+                            onTap: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                          InkWell(
+                            child: Container(
+                                width: MediaQuery.of(context).size.width * 0.35,
+                                height: 40.0,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    color: Colors.green),
+                                child: Center(
+                                    child: Text(
+                                  "Update",
+                                  style: TextStyle(color: Colors.white),
+                                ))),
+                            onTap: () async {
+                               Navigator.of(context).pop();
+                              //create Farmer
+                              Farmer farmer = Farmer(
+                                name: _farmer.name,
+                                phone: farmerPhoneController.text,
+                                country: _farmer.country,
+                              );
+                              farmerResponse.doFarmerUpdation(farmer, widget.farmer.id);
+                            },
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
+  Future buildUpdateCountryDialog(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5.0),
+            ), //this right here
+            child: SingleChildScrollView(
+              child: Container(
+                width: width * 0.75,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "UPDATE COUNTRY",
+                            style: TextStyle(
+                                color: Colors.indigo,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              Icons.close,
+                              size: 30,
+                              color: Colors.blue,
+                            ),
+                            onPressed: () => {
+                              //CLOSE dialogue
+                              Navigator.of(context).pop(),
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      height: 0.5,
+                      color: Colors.grey,
+                    ),
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                        child: Text(
+                          "Country",
+                          style: TextStyle(
+                              color: Colors.black45,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16.0),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+                      child: Container(
+                        height: 45,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(width: 1.0),
+                        ),
+                        child: TextField(
+                          controller: farmerCountryController,
+                          textAlign: TextAlign.justify,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                          ),
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            errorBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 5.0),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      height: 0.5,
+                      color: Colors.grey,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 20.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          InkWell(
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * 0.25,
+                              height: 40.0,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  border: Border.all(width: 1)),
+                              child: Center(
+                                child: Text(
+                                  "Close",
+                                  style: TextStyle(
+                                      color: Colors.black45,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ),
+                            onTap: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                          InkWell(
+                            child: Container(
+                                width: MediaQuery.of(context).size.width * 0.35,
+                                height: 40.0,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    color: Colors.green),
+                                child: Center(
+                                    child: Text(
+                                  "Update",
+                                  style: TextStyle(color: Colors.white),
+                                ))),
+                            onTap: () async {
+                               Navigator.of(context).pop();
+                              //create Farmer
+                              Farmer farmer = Farmer(
+                                name: _farmer.name,
+                                phone: _farmer.phone,
+                                country: farmerCountryController.text,
+                              );
+                              farmerResponse.doFarmerUpdation(farmer, widget.farmer.id);
+                            },
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
   @override
   void onRegistrationError(String error) {
     // TODO: implement onRegistrationError
@@ -610,5 +1081,32 @@ class _FarmPageState extends State<FarmPage>
   @override
   void onFetchError(String error) {
     // TODO: implement onFetchError
+  }
+
+  @override
+  void onError(String error) {
+      // TODO: implement onError
+    _showSnackBar(error);
+      
+    }
+  
+    @override
+    void onSuccessUpdation(int result) {
+    // TODO: implement onSuccessUpdation
+    print("****************ROW AFFETCTED******************$result");
+    getFarmer(widget.farmer.id);
+  }
+
+  @override
+  void onFarmerReceived(Farmer farmer) {
+      // TODO: implement onFarmerReceived
+      setState(() {
+        _farmer = farmer;
+      });
+    }
+  
+    @override
+    void onFetchFarmerError(String error) {
+    // TODO: implement onFetchFarmerError
   }
 }
